@@ -95,11 +95,13 @@ package com.green.board;
  */
 
 import com.green.board.model.BoardInsReq;
+import com.green.board.model.BoardSelOneRes;
+import com.green.board.model.BoardSelRes;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 /*
   DI: 참조 인덱스, 참조 주입
   final 붙은 멤버필드 DI받을 수 있게 생성자를 만든다.
@@ -112,7 +114,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController //빈등록+컨트롤러 임명, 빈 등록은 스트링 컨테이너가 직접 객체화를 한다.
 @RequestMapping("board")
 public class BoardController {
-    private final BoardService boardService;
+    private final BoardService service;
     //insert(Create)
     @PostMapping// (post) /board 요청이 오면 이 메소드가 응답 담당자.
     //위에 @RequestMapping("/board")가 없었다면 URL을 작성해줘야한다.
@@ -120,6 +122,20 @@ public class BoardController {
     //@RequestBody는 요청이 올 때 데이터가 JSON형태로 오니까 거기에 맞춰서 데이터를 받자는 에노테이션.
     public int insBoard(@RequestBody BoardInsReq p){
         System.out.println(p);
-        return 1;
+        return service.insBoard(p);
     }
+
+    // 객체 > JSON 으로 바꾸는 직렬화 작업.. 은 자동으로 해줌.
+    // localhost:8080/board 에서 확인가능.
+    @GetMapping
+    public List<BoardSelRes> selBoardList(){
+        return service.selBoardList();
+    }
+
+    @GetMapping("{boardId}")
+    // @RequestMapping에서 미리
+    public BoardSelOneRes selBoard(@PathVariable int boardId){
+        return service.selBoardOne(boardId);
+    }
+
 }

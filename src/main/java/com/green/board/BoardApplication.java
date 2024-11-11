@@ -11,3 +11,6 @@ public class BoardApplication {
 	}
 
 }
+
+// binding exception 보통 이름 안맞은 경우
+//sql.syntex 에러. 문법에러
