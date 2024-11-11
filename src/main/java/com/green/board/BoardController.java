@@ -19,13 +19,25 @@ package com.green.board;
     브라우저의 주소창에 주소값을 적고 엔터는 URL+GET+데이터 방식(key/value)으로 요청을 보낸다.
     데이터를 보낼 때 보여지나 안보여지나 차이로 보낼 수 있는데
     1. 쿼리스트링 방식(파라미터라고 부르기도 함), URL(헤더)에 데이터를 포함하는 방식.
-    2. body에 담아서 보내는 방식. 응답을 보통 이 방식으로 했음.
+    2. body에 담아서 보내는 방식.(FormData, JSON) 응답을 보통 이 방식으로 했음.
 
     쿼리스트링 모양: URL + 쿼리스트링(?로 시작. key=value, 여러개라면 & 구분)
                   www.naver.com?name=홍길동&age=12&height=172.1
 
     대용량의 데이터를 보내야할 때도 body에 데이터를 담아서 보낸다. URL은 길이제한이 있기 때문에
     URL에 데이터를 포함하는 쿼리스트링은 대용량을 보낼 수 없다.
+
+    JSON(JavaScript Object Natation): 자바스크립트에서 객체를 만들 때 사용하는 문법을 이용하여 데이터를 사용하는 포맷(형식)
+                                      Key와 Value로 이루어져 있음.
+    예를들어 name은 홍길동, age는 22살, height는 178.2 데이터를 JSON으로 표현하면
+     {
+        "name": "홍길동",
+        "age": 22,
+        "height": 178.2
+     }
+    이렇게 표현하는 문자열이다.
+    {}는 객체를 의미하고 []은 배열을 의미한다. ""은 문자열, 숫자형은 ""없이 표현한다.
+    Key는 무조건 ""감싸줘야한다.
 
     Restful 이전에는 get, post 방식 밖에 없었다.
     get방식은 주로 쿼리스트링 방식을 사용하고  - 데이터를 읽어올 때 사용(간혹 삭제할 때도 사용)
@@ -83,20 +95,29 @@ package com.green.board;
  */
 
 import com.green.board.model.BoardInsReq;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-@RestController
+/*
+  DI: 참조 인덱스, 참조 주입
+  final 붙은 멤버필드 DI받을 수 있게 생성자를 만든다.
+  애노테이션 생략하면 오버로딩된 생성자를 직접 만들어주면 된다.
+ */
+@RequiredArgsConstructor // 애노테이션을 붙이면 아래 생성자가 자동으로 만들어진다.
+//    public BoardController(BoardService boardService) {
+//        this.boardService = boardService;
+//    }
+@RestController //빈등록+컨트롤러 임명, 빈 등록은 스트링 컨테이너가 직접 객체화를 한다.
 @RequestMapping("board")
 public class BoardController {
-
+    private final BoardService boardService;
     //insert(Create)
     @PostMapping// (post) /board 요청이 오면 이 메소드가 응답 담당자.
     //위에 @RequestMapping("/board")가 없었다면 URL을 작성해줘야한다.
-    //@PostMapping("/board") 요렇게
-    //@RequestBody는 요청이 올 때 데이터가 JSON형태로 오니까 거기에 맞춰서 데이터를 받자.
+    //@PostMapping("/board"): @RequestMapping("/board") 이 코드가 없었다면 URL을 작성해줘야 함
+    //@RequestBody는 요청이 올 때 데이터가 JSON형태로 오니까 거기에 맞춰서 데이터를 받자는 에노테이션.
     public int insBoard(@RequestBody BoardInsReq p){
         System.out.println(p);
         return 1;
