@@ -9,6 +9,8 @@
 
  html(Hyper Text Markup Language) 둘 다 마크업 언어이다.
 
+!DOCTYPE mapper에 mapper가 쓰였는지 확인할 것.
+
  <태그명></태그명> or <태그명/> 태그를 사용할 수 있다.  태그 이름과 속성값은 어떻게 처리할 지 약속되어 있다.
  그 약속은 플랫폼마다 모두 다르다. 참고로 안드로이드에서는 화면을 xml파일로 구현한다.
 
@@ -40,7 +42,7 @@
     <select id="selBoardOne">
             SELECT board_id AS boardId, title, contents, writer, created_at As createdAt
             FROM board
-            ORDER BY board_id = #{board_id}
+            WHERE board_id = #{board_id}
     </select>
 
     <update id="updBoard">

@@ -137,6 +137,7 @@ public class BoardController {
     public BoardSelOneRes selBoard(@PathVariable int boardId){
         return service.selBoardOne(boardId);
     }
+    // @PathVariable로 PK값을 받아와서 셀렉
 
     @PutMapping  //body에 있는 JSON을 받아서 @RequestBody에노테이션붙임
     public int updBoard(@RequestBody BoardUpdReq p){
