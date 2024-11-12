@@ -1,6 +1,7 @@
 package com.green.board.model;
 
 import lombok.*;
+// 응답용
 
 @Getter
 @Setter

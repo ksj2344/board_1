@@ -3,8 +3,8 @@ package com.green.board;
     Controller의 역할 : 요청(request)을 받고 응답(response)을 처리하는 객체. 로직처리는 하지 않는다.
 
         사용하는 애노테이션(Annotation)
-        @Controller - 응답을 html로 함(데이터로 만든 화면을 응답)
-        @RestController - 응답을 JSON으로 함(데이터만 응답)
+        @Controller - 응답을 html로 함(데이터로 만든 화면을 응답), 프론트가 사용
+        @RestController - 응답을 JSON으로 함(데이터만 응답), 우리는 이쪽을 사용
 
         @RequestMapping - URL과 클래스 아래에 있는 Method 맵핑(연결)
                           class에 RequestMapping 전체 메소드 주소가 맵핑
@@ -94,9 +94,7 @@ package com.green.board;
     (delete) /board - 글 삭제 (Path Variable or Query String으로 PK값 전달. 보통 쿼리스트링)
  */
 
-import com.green.board.model.BoardInsReq;
-import com.green.board.model.BoardSelOneRes;
-import com.green.board.model.BoardSelRes;
+import com.green.board.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -107,12 +105,9 @@ import java.util.List;
   final 붙은 멤버필드 DI받을 수 있게 생성자를 만든다.
   애노테이션 생략하면 오버로딩된 생성자를 직접 만들어주면 된다.
  */
-@RequiredArgsConstructor // 애노테이션을 붙이면 아래 생성자가 자동으로 만들어진다.
-//    public BoardController(BoardService boardService) {
-//        this.boardService = boardService;
-//    }
-@RestController //빈등록+컨트롤러 임명, 빈 등록은 스트링 컨테이너가 직접 객체화를 한다.
-@RequestMapping("board")
+@RequiredArgsConstructor
+@RestController //빈등록+컨트롤러 임명, 빈 등록이 되어있으면 스트링 컨테이너가 직접 객체화를 한다.
+@RequestMapping("board") //전체주소 맵핑
 public class BoardController {
     private final BoardService service;
     //insert(Create)
@@ -125,6 +120,11 @@ public class BoardController {
         return service.insBoard(p);
     }
 
+//    @RequiredArgsConstructor // 애노테이션을 붙이면 아래 생성자가 자동으로 만들어진다.
+//    public BoardController(BoardService boardService) {
+//        this.boardService = boardService;
+//    }
+
     // 객체 > JSON 으로 바꾸는 직렬화 작업.. 은 자동으로 해줌.
     // localhost:8080/board 에서 확인가능.
     @GetMapping
@@ -132,10 +132,25 @@ public class BoardController {
         return service.selBoardList();
     }
 
-    @GetMapping("{boardId}")
-    // @RequestMapping에서 미리
+    @GetMapping("{boardId}")  //boardId는 PK 즉, 정수형.
+    // @RequestMapping에서 미리 /board처리해서 getMapping단계에선 /board{boardId}가 아니라 {boardId}만 쳐도됨.
     public BoardSelOneRes selBoard(@PathVariable int boardId){
         return service.selBoardOne(boardId);
     }
 
+    @PutMapping  //body에 있는 JSON을 받아서 @RequestBody에노테이션붙임
+    public int updBoard(@RequestBody BoardUpdReq p){
+        System.out.println(p);
+        return service.updBoard(p);
+    }
+    // post/put/path 만 JSON으로 정보를 받는다. 왜? 데이터가 많을 경우가 있어서. Delete랑 get은 많이 받을 일 없음.
+
+    /*
+        @ModelAttribute: FromData or Query String 데이터를 받을 수 있다.
+    */
+    @DeleteMapping   //@ModelAttribute 생략가능. 어차피 자동으로 붙는다
+    public int delBoard(@ModelAttribute BoardDelReq p){ //쿼리 스트링으로 받는다.
+        System.out.println(p);
+        return service.delBoard(p);
+    }
 }

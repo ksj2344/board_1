@@ -1,8 +1,6 @@
 package com.green.board;
 
-import com.green.board.model.BoardInsReq;
-import com.green.board.model.BoardSelOneRes;
-import com.green.board.model.BoardSelRes;
+import com.green.board.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +13,13 @@ import java.util.List;
 
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor //클래스에서 선언된 final 필드의 생성자를 아래 예시처럼 자동으로 생성
 public class BoardService {
     private final BoardMapper mapper;
+
+//    public BoardService(BoardMapper mapper) {
+//        this.mapper = mapper;
+//    }
 
     public int insBoard(BoardInsReq p){
         return mapper.insBoard(p);
@@ -26,7 +28,16 @@ public class BoardService {
     public List<BoardSelRes> selBoardList(){
         return mapper.selBoardList();
     }
+
     public BoardSelOneRes selBoardOne(int p){
        return mapper.selBoardOne(p);
+    }
+
+    public int updBoard(BoardUpdReq p){
+        return mapper.updBoard(p);
+    }
+
+    public int delBoard(BoardDelReq p){
+        return mapper.delBoard(p);
     }
 }
